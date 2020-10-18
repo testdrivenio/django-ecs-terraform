@@ -42,7 +42,7 @@
     ],
     "mountPoints": [
       {
-        "containerPath": "/usr/src/app/staticfiles/",
+        "containerPath": "/usr/src/app/staticfiles",
         "sourceVolume": "static_volume"
       }
     ],
@@ -71,7 +71,7 @@
     ],
     "mountPoints": [
       {
-        "containerPath": "/usr/src/app/staticfiles/",
+        "containerPath": "/usr/src/app/staticfiles",
         "sourceVolume": "static_volume"
       }
     ],
