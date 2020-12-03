@@ -61,6 +61,14 @@ Check out the [post](https://testdriven.io/blog/deploying-django-to-ecs-with-ter
     $ cd ..
     ```
 
+1. Terraform will output an ALB domain. Create a CNAME record for this domain
+   for the value in the `allowed_hosts` variable.
+
+1. Open the EC2 instances overview page in AWS. Use `ssh ec2-user@<ip>` to
+   connect to the instances until you find one for which `docker ps` contains
+   the Django container. Run
+   `docker exec -it <container ID> python manage.py migrate`.
+
 1. You can also run the following script to bump the Task Definition and update the Service:
 
     ```sh
