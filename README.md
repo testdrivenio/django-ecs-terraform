@@ -69,6 +69,8 @@ Check out the [post](https://testdriven.io/blog/deploying-django-to-ecs-with-ter
    the Django container. Run
    `docker exec -it <container ID> python manage.py migrate`.
 
+1. Now you can open `https://your.domain.com/admin`. Note that `http://` won't work.
+
 1. You can also run the following script to bump the Task Definition and update the Service:
 
     ```sh
