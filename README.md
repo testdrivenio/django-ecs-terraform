@@ -29,6 +29,8 @@ Check out the [post](https://testdriven.io/blog/deploying-django-to-ecs-with-ter
 
 1. Sign up for an AWS account
 
+1. Create two ECR repositories, `django-app` and `nginx`.
+
 1. Fork/Clone
 
 1. Build the Django and Nginx Docker images and push them up to ECR:
