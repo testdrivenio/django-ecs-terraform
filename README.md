@@ -29,6 +29,8 @@ Check out the [post](https://testdriven.io/blog/deploying-django-to-ecs-with-ter
 
 1. Sign up for an AWS account
 
+1. Create two ECR repositories, `django-app` and `nginx`.
+
 1. Fork/Clone
 
 1. Build the Django and Nginx Docker images and push them up to ECR:
@@ -36,12 +38,12 @@ Check out the [post](https://testdriven.io/blog/deploying-django-to-ecs-with-ter
     ```sh
     $ cd app
     $ docker build -t <AWS_ACCOUNT_ID>.dkr.ecr.us-west-1.amazonaws.com/django-app:latest .
-    $ docker push -t <AWS_ACCOUNT_ID>.dkr.ecr.us-west-1.amazonaws.com/django-app:latest
+    $ docker push <AWS_ACCOUNT_ID>.dkr.ecr.us-west-1.amazonaws.com/django-app:latest
     $ cd ..
 
     $ cd nginx
     $ docker build -t <AWS_ACCOUNT_ID>.dkr.ecr.us-west-1.amazonaws.com/nginx:latest .
-    $ docker push -t <AWS_ACCOUNT_ID>.dkr.ecr.us-west-1.amazonaws.com/nginx:latest
+    $ docker push <AWS_ACCOUNT_ID>.dkr.ecr.us-west-1.amazonaws.com/nginx:latest
     $ cd ..
     ```
 
@@ -58,6 +60,16 @@ Check out the [post](https://testdriven.io/blog/deploying-django-to-ecs-with-ter
     $ terraform apply
     $ cd ..
     ```
+
+1. Terraform will output an ALB domain. Create a CNAME record for this domain
+   for the value in the `allowed_hosts` variable.
+
+1. Open the EC2 instances overview page in AWS. Use `ssh ec2-user@<ip>` to
+   connect to the instances until you find one for which `docker ps` contains
+   the Django container. Run
+   `docker exec -it <container ID> python manage.py migrate`.
+
+1. Now you can open `https://your.domain.com/admin`. Note that `http://` won't work.
 
 1. You can also run the following script to bump the Task Definition and update the Service:
 
