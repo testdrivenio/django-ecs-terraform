@@ -27,7 +27,7 @@ variable "private_subnet_2_cidr" {
 variable "availability_zones" {
   description = "Availability zones"
   type        = list(string)
-  default     = ["us-west-1a", "us-west-1b"]
+  default     = ["us-west-1b", "us-west-1c"]
 }
 
 
@@ -48,7 +48,7 @@ variable "ecs_cluster_name" {
 variable "amis" {
   description = "Which AMI to spawn."
   default = {
-    us-west-1 = "ami-0667a9cc6a93f50fe"
+    us-west-1 = "ami-0bd3976c0dbacc605"
   }
 }
 variable "instance_type" {
