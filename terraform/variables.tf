@@ -1,5 +1,10 @@
 # core
 
+variable "name" {
+    description = "Project Name"
+    default = "django-ecs-terraform"
+}
+
 variable "region" {
   description = "The AWS region to create resources in."
   default     = "us-west-1"
