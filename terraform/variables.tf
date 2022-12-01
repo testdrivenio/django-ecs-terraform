@@ -73,7 +73,7 @@ variable "app_count" {
 }
 variable "allowed_hosts" {
   description = "Domain name for allowed hosts"
-  default     = "YOUR DOMAIN NAME"
+  default     = "*"
 }
 
 
@@ -119,7 +119,7 @@ variable "rds_username" {
   default     = "foo"
 }
 variable "rds_password" {
-  description = "RDS database password"
+  description = "password"
 }
 variable "rds_instance_class" {
   description = "RDS instance type"
@@ -129,7 +129,7 @@ variable "rds_instance_class" {
 
 # domain
 
-variable "certificate_arn" {
-  description = "AWS Certificate Manager ARN for validated domain"
-  default     = "YOUR ARN"
-}
+# variable "certificate_arn" {
+#   description = "AWS Certificate Manager ARN for validated domain"
+#   default     = "YOUR ARN"
+# }
