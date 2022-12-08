@@ -13,10 +13,9 @@ resource "aws_launch_configuration" "ecs" {
   user_data                   = "#!/bin/bash\necho ECS_CLUSTER='${var.ecs_cluster_name}-cluster' > /etc/ecs/ecs.config"
 }
 
-data "template_file" "app" {
-  template = file("templates/django_app.json.tpl")
-
-  vars = {
+resource "aws_ecs_task_definition" "app" {
+  family = "django-app"
+  container_definitions = templatefile("templates/django_app.json.tpl", {
     docker_image_url_django = var.docker_image_url_django
     docker_image_url_nginx  = var.docker_image_url_nginx
     region                  = var.region
@@ -25,13 +24,9 @@ data "template_file" "app" {
     rds_password            = var.rds_password
     rds_hostname            = aws_db_instance.production.address
     allowed_hosts           = var.allowed_hosts
-  }
-}
-
-resource "aws_ecs_task_definition" "app" {
-  family                = "django-app"
-  container_definitions = data.template_file.app.rendered
-  depends_on            = [aws_db_instance.production]
+    }
+  )
+  depends_on = [aws_db_instance.production]
 
   volume {
     name      = "static_volume"
