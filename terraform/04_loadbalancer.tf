@@ -1,6 +1,6 @@
 # Production Load Balancer
 resource "aws_lb" "default" {
-  name               = "${var.ecs_cluster_name}-alb"
+  name               = local.name
   load_balancer_type = "application"
   internal           = false
   security_groups    = [aws_security_group.load-balancer.id]
@@ -8,8 +8,8 @@ resource "aws_lb" "default" {
 }
 
 # Target group
-resource "aws_alb_target_group" "default-target-group" {
-  name     = "${var.ecs_cluster_name}-tg"
+resource "aws_alb_target_group" "default" {
+  name     = local.name
   port     = 80
   protocol = "HTTP"
   vpc_id   = aws_vpc.default.id
@@ -23,20 +23,19 @@ resource "aws_alb_target_group" "default-target-group" {
     interval            = 5
     matcher             = "200"
   }
+
+  depends_on = [aws_lb.default]
 }
 
 # Listener (redirects traffic from the load balancer to the target group)
-# resource "aws_alb_listener" "ecs-alb-http-listener" {
-#   load_balancer_arn = aws_lb.default.id
-#   port              = "443"
-#   protocol          = "HTTPS"
-#   ssl_policy        = "ELBSecurityPolicy-2016-08"
-#   certificate_arn   = var.certificate_arn
-#   depends_on        = [aws_alb_target_group.default-target-group]
-# 
-#   default_action {
-#     type             = "forward"
-#     target_group_arn = aws_alb_target_group.default-target-group.arn
-#   }
-# }
-# 
+resource "aws_alb_listener" "default" {
+  load_balancer_arn = aws_lb.default.id
+  port              = "80"
+  protocol          = "HTTP"
+  depends_on        = [aws_alb_target_group.default]
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_alb_target_group.default.arn
+  }
+}

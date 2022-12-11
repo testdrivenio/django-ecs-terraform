@@ -24,6 +24,10 @@ resource "aws_security_group" "load-balancer" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  tags = {
+    Name = "${local.name}-load-balancer"
+  }
 }
 
 # ECS Security group (traffic ALB -> ECS, ssh -> ECS)
@@ -52,6 +56,10 @@ resource "aws_security_group" "ecs" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  tags = {
+    Name = "${local.name}-ecs"
+  }
 }
 
 # RDS Security Group (traffic ECS -> RDS)
@@ -72,5 +80,9 @@ resource "aws_security_group" "rds" {
     from_port   = 0
     to_port     = 0
     cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "${local.name}-rds"
   }
 }

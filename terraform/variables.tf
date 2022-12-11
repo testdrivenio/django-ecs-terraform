@@ -1,13 +1,14 @@
 # core
 
-variable "name" {
-    description = "Project Name"
-    default = "django-ecs-terraform"
+locals {
+  name            = "terraclone-${terraform.workspace}"
+  environment = terraform.workspace
 }
+
 
 variable "region" {
   description = "The AWS region to create resources in."
-  default     = "us-west-1"
+  default     = "us-east-2"
 }
 
 
@@ -32,7 +33,7 @@ variable "private_subnet_2_cidr" {
 variable "availability_zones" {
   description = "Availability zones"
   type        = list(string)
-  default     = ["us-west-1b", "us-west-1c"]
+  default     = ["us-east-2a", "us-east-2b"]
 }
 
 
@@ -53,7 +54,7 @@ variable "ecs_cluster_name" {
 variable "amis" {
   description = "Which AMI to spawn."
   default = {
-    us-west-1 = "ami-0bd3976c0dbacc605"
+    us-east-2 = "ami-086e001f1a73d208c"
   }
 }
 variable "instance_type" {
@@ -120,10 +121,11 @@ variable "rds_username" {
 }
 variable "rds_password" {
   description = "password"
+  default = "password"
 }
 variable "rds_instance_class" {
   description = "RDS instance type"
-  default     = "db.t2.micro"
+  default     = "db.m5.large"
 }
 
 

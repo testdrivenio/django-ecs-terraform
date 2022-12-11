@@ -1,16 +1,16 @@
 resource "aws_db_subnet_group" "default" {
-  name       = "main"
+  name       = local.name
   subnet_ids = [aws_subnet.private-1.id, aws_subnet.private-2.id]
 }
 
 resource "aws_db_instance" "default" {
-  identifier              = "production"
-  name                    = var.rds_db_name
+  identifier              = local.name
+  db_name                    = var.rds_db_name
   username                = var.rds_username
   password                = var.rds_password
   port                    = "5432"
   engine                  = "postgres"
-  engine_version          = "12.3"
+  engine_version          = "10.18"
   instance_class          = var.rds_instance_class
   allocated_storage       = "20"
   storage_encrypted       = false

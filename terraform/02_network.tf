@@ -10,11 +10,19 @@ resource "aws_subnet" "public-1" {
   cidr_block        = var.public_subnet_1_cidr
   vpc_id            = aws_vpc.default.id
   availability_zone = var.availability_zones[0]
+
+  tags = {
+    Name = "${local.name}-public-1"
+  }
 }
 resource "aws_subnet" "public-2" {
   cidr_block        = var.public_subnet_2_cidr
   vpc_id            = aws_vpc.default.id
   availability_zone = var.availability_zones[1]
+
+  tags = {
+    Name = "${local.name}-public-2"
+  }
 }
 
 # Private subnets
@@ -22,35 +30,52 @@ resource "aws_subnet" "private-1" {
   cidr_block        = var.private_subnet_1_cidr
   vpc_id            = aws_vpc.default.id
   availability_zone = var.availability_zones[0]
+
+  tags = {
+    Name = "${local.name}-private-1"
+  }
 }
 resource "aws_subnet" "private-2" {
   cidr_block        = var.private_subnet_2_cidr
   vpc_id            = aws_vpc.default.id
   availability_zone = var.availability_zones[1]
+
+  tags = {
+    Name = "${local.name}-private-2"
+  }
 }
 
 # Route tables for the subnets
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.default.id
+
+  tags = {
+    Name = "${local.name}-public"
+  }
 }
 resource "aws_route_table" "private" {
   vpc_id = aws_vpc.default.id
+
+  tags = {
+    Name = "${local.name}-private"
+  }
 }
 
 # Associate the newly created route tables to the subnets
-resource "aws_route_table_association" "public" {
+resource "aws_route_table_association" "public_1" {
   route_table_id = aws_route_table.public.id
   subnet_id      = aws_subnet.public-1.id
+  
 }
-resource "aws_route_table_association" "public" {
+resource "aws_route_table_association" "public_2" {
   route_table_id = aws_route_table.public.id
   subnet_id      = aws_subnet.public-2.id
 }
-resource "aws_route_table_association" "private" {
+resource "aws_route_table_association" "private_1" {
   route_table_id = aws_route_table.private.id
   subnet_id      = aws_subnet.private-1.id
 }
-resource "aws_route_table_association" "private" {
+resource "aws_route_table_association" "private_2" {
   route_table_id = aws_route_table.private.id
   subnet_id      = aws_subnet.private-2.id
 }
