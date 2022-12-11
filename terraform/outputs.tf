@@ -1,3 +1,4 @@
-output "alb_hostname" {
-  value = aws_lb.production.dns_name
-}
+# output "alb_hostname" {
+#   value = aws_lb.default.dns_name
+# }
+# 
