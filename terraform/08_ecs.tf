@@ -10,7 +10,6 @@ resource "aws_launch_configuration" "default" {
   iam_instance_profile        = aws_iam_instance_profile.ecs.name
   key_name                    = aws_key_pair.default.key_name
   associate_public_ip_address = true
-  # user_data                   = "#!/bin/bash\necho ECS_CLUSTER='${local.name}' > /etc/ecs/ecs.config"
   user_data = <<EOF
     #!/bin/bash
     echo ECS_CLUSTER='${local.name}' > /etc/ecs/ecs.config
@@ -18,7 +17,7 @@ resource "aws_launch_configuration" "default" {
 }
 
 data "template_file" "default" {
-  template = file("templates/django_app.json.tpl")
+  template = file("templates/apps.json.tpl")
   depends_on            = [aws_db_instance.default, aws_ecr_repository.django, aws_ecr_repository.nginx]
   vars = {
     docker_image_url_django = replace(aws_ecr_repository.django.repository_url, "https://", "")
@@ -29,11 +28,12 @@ data "template_file" "default" {
     rds_password            = var.rds_password
     rds_hostname            = aws_db_instance.default.address
     allowed_hosts           = var.allowed_hosts
+    name                    = local.name
   }
 }
 
 resource "aws_ecs_task_definition" "default" {
-  family                = "${local.name}-django"
+  family                = local.name
   container_definitions = data.template_file.default.rendered
   depends_on            = [aws_db_instance.default]
 

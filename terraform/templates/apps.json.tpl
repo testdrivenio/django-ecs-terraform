@@ -1,6 +1,6 @@
 [
   {
-    "name": "django-app",
+    "name": "django",
     "image": "${docker_image_url_django}",
     "essential": true,
     "cpu": 10,
@@ -13,7 +13,6 @@
         "protocol": "tcp"
       }
     ],
-    "command": ["gunicorn", "-w", "3", "-b", ":8000", "hello_django.wsgi:application"],
     "environment": [
       {
         "name": "RDS_DB_NAME",
@@ -49,9 +48,9 @@
     "logConfiguration": {
       "logDriver": "awslogs",
       "options": {
-        "awslogs-group": "/ecs/django-app",
+        "awslogs-group": "/ecs/${name}-django",
         "awslogs-region": "${region}",
-        "awslogs-stream-prefix": "django-app-log-stream"
+        "awslogs-stream-prefix": "${name}-django"
       }
     }
   },
@@ -61,7 +60,7 @@
     "essential": true,
     "cpu": 10,
     "memory": 128,
-    "links": ["django-app"],
+    "links": ["django"],
     "portMappings": [
       {
         "containerPort": 80,
@@ -78,9 +77,9 @@
     "logConfiguration": {
       "logDriver": "awslogs",
       "options": {
-        "awslogs-group": "/ecs/nginx",
+        "awslogs-group": "/ecs/${name}-nginx",
         "awslogs-region": "${region}",
-        "awslogs-stream-prefix": "nginx-log-stream"
+        "awslogs-stream-prefix": "${name}-nginx"
       }
     }
   }

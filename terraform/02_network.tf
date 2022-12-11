@@ -6,7 +6,7 @@ resource "aws_vpc" "default" {
 }
 
 # Public subnets
-resource "aws_subnet" "public-1" {
+resource "aws_subnet" "public_1" {
   cidr_block        = var.public_subnet_1_cidr
   vpc_id            = aws_vpc.default.id
   availability_zone = var.availability_zones[0]
@@ -15,7 +15,7 @@ resource "aws_subnet" "public-1" {
     Name = "${local.name}-public-1"
   }
 }
-resource "aws_subnet" "public-2" {
+resource "aws_subnet" "public_2" {
   cidr_block        = var.public_subnet_2_cidr
   vpc_id            = aws_vpc.default.id
   availability_zone = var.availability_zones[1]
@@ -26,7 +26,7 @@ resource "aws_subnet" "public-2" {
 }
 
 # Private subnets
-resource "aws_subnet" "private-1" {
+resource "aws_subnet" "private_1" {
   cidr_block        = var.private_subnet_1_cidr
   vpc_id            = aws_vpc.default.id
   availability_zone = var.availability_zones[0]
@@ -35,7 +35,7 @@ resource "aws_subnet" "private-1" {
     Name = "${local.name}-private-1"
   }
 }
-resource "aws_subnet" "private-2" {
+resource "aws_subnet" "private_2" {
   cidr_block        = var.private_subnet_2_cidr
   vpc_id            = aws_vpc.default.id
   availability_zone = var.availability_zones[1]
@@ -64,20 +64,20 @@ resource "aws_route_table" "private" {
 # Associate the newly created route tables to the subnets
 resource "aws_route_table_association" "public_1" {
   route_table_id = aws_route_table.public.id
-  subnet_id      = aws_subnet.public-1.id
+  subnet_id      = aws_subnet.public_1.id
   
 }
 resource "aws_route_table_association" "public_2" {
   route_table_id = aws_route_table.public.id
-  subnet_id      = aws_subnet.public-2.id
+  subnet_id      = aws_subnet.public_2.id
 }
 resource "aws_route_table_association" "private_1" {
   route_table_id = aws_route_table.private.id
-  subnet_id      = aws_subnet.private-1.id
+  subnet_id      = aws_subnet.private_1.id
 }
 resource "aws_route_table_association" "private_2" {
   route_table_id = aws_route_table.private.id
-  subnet_id      = aws_subnet.private-2.id
+  subnet_id      = aws_subnet.private_2.id
 }
 
 # Elastic IP
@@ -90,7 +90,7 @@ resource "aws_eip" "default" {
 # NAT gateway
 resource "aws_nat_gateway" "default" {
   allocation_id = aws_eip.default.id
-  subnet_id     = aws_subnet.public-1.id
+  subnet_id     = aws_subnet.public_1.id
   depends_on    = [aws_eip.default]
 }
 resource "aws_route" "nat-gateway" {

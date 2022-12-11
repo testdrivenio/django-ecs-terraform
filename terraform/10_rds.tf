@@ -1,6 +1,6 @@
 resource "aws_db_subnet_group" "default" {
   name       = local.name
-  subnet_ids = [aws_subnet.private-1.id, aws_subnet.private-2.id]
+  subnet_ids = [aws_subnet.private_1.id, aws_subnet.private_2.id]
 }
 
 resource "aws_db_instance" "default" {

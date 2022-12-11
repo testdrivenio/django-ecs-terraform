@@ -23,3 +23,9 @@ COPY . .
 
 # collect static files
 RUN python manage.py collectstatic --no-input
+
+RUN python manage.py makemigrations && python manage.py migrate
+
+CMD gunicorn -w 3 -b :8000 hello_django.wsgi:application
+
+# CMD python manage.py runserver

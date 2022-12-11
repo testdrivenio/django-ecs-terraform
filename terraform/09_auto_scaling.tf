@@ -5,7 +5,7 @@ resource "aws_autoscaling_group" "default" {
   desired_capacity     = var.autoscale_desired
   health_check_type    = "EC2"
   launch_configuration = aws_launch_configuration.default.name
-  vpc_zone_identifier  = [aws_subnet.private-1.id, aws_subnet.private-2.id]
+  vpc_zone_identifier  = [aws_subnet.private_1.id, aws_subnet.private_2.id]
 
   tag {
     key                 = "Name"

@@ -1,6 +1,6 @@
 # ALB Security Group (Traffic Internet -> ALB)
 resource "aws_security_group" "load-balancer" {
-  name        = "load_balancer_security_group"
+  name        = "${local.name}-load-balancer"
   description = "Controls access to the ALB"
   vpc_id      = aws_vpc.default.id
 
@@ -32,7 +32,7 @@ resource "aws_security_group" "load-balancer" {
 
 # ECS Security group (traffic ALB -> ECS, ssh -> ECS)
 resource "aws_security_group" "ecs" {
-  name        = "ecs_security_group"
+  name        = "${local.name}-ecs"
   description = "Allows inbound access from the ALB only"
   vpc_id      = aws_vpc.default.id
 
@@ -47,7 +47,8 @@ resource "aws_security_group" "ecs" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    security_groups = [aws_security_group.bastion.id]
+
   }
 
   egress {
@@ -64,7 +65,7 @@ resource "aws_security_group" "ecs" {
 
 # RDS Security Group (traffic ECS -> RDS)
 resource "aws_security_group" "rds" {
-  name        = "rds-security-group"
+  name        = "${local.name}-rds"
   description = "Allows inbound access from ECS only"
   vpc_id      = aws_vpc.default.id
 
@@ -84,5 +85,29 @@ resource "aws_security_group" "rds" {
 
   tags = {
     Name = "${local.name}-rds"
+  }
+}
+
+resource "aws_security_group" "bastion" {
+  name        = "${local.name}-bastion"
+  description = "Allows inbound access from the ALB only"
+  vpc_id      = aws_vpc.default.id
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "${local.name}-bastion"
   }
 }
