@@ -57,7 +57,7 @@ resource "aws_route_table_association" "private-route-2-association" {
 
 # Elastic IP
 resource "aws_eip" "elastic-ip-for-nat-gw" {
-  vpc                       = true
+  domain                       = "vpc"
   associate_with_private_ip = "10.0.0.5"
   depends_on                = [aws_internet_gateway.production-igw]
 }

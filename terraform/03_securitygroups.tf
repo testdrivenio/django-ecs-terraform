@@ -26,9 +26,9 @@ resource "aws_security_group" "load-balancer" {
   }
 }
 
-# ECS Security group (traffic ALB -> ECS, ssh -> ECS)
-resource "aws_security_group" "ecs" {
-  name        = "ecs_security_group"
+# ECS Fargate Security group (traffic ALB -> ECS Fargate Tasks)
+resource "aws_security_group" "ecs-fargate" {
+  name        = "ecs_fargate_security_group"
   description = "Allows inbound access from the ALB only"
   vpc_id      = aws_vpc.production-vpc.id
 
@@ -39,12 +39,7 @@ resource "aws_security_group" "ecs" {
     security_groups = [aws_security_group.load-balancer.id]
   }
 
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  # No SSH ingress rule since Fargate tasks are abstracted and not directly accessible via SSH
 
   egress {
     from_port   = 0
@@ -54,17 +49,17 @@ resource "aws_security_group" "ecs" {
   }
 }
 
-# RDS Security Group (traffic ECS -> RDS)
+# RDS Security Group (traffic Fargate -> RDS)
 resource "aws_security_group" "rds" {
   name        = "rds-security-group"
-  description = "Allows inbound access from ECS only"
+  description = "Allows inbound access from Fargate only"
   vpc_id      = aws_vpc.production-vpc.id
 
   ingress {
     protocol        = "tcp"
     from_port       = "5432"
     to_port         = "5432"
-    security_groups = [aws_security_group.ecs.id]
+    security_groups = [aws_security_group.ecs-fargate.id]
   }
 
   egress {

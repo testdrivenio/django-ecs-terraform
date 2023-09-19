@@ -7,12 +7,13 @@ resource "aws_lb" "production" {
   subnets            = [aws_subnet.public-subnet-1.id, aws_subnet.public-subnet-2.id]
 }
 
-# Target group
+# Target group for ECS Fargate
 resource "aws_alb_target_group" "default-target-group" {
   name     = "${var.ecs_cluster_name}-tg"
   port     = 80
   protocol = "HTTP"
   vpc_id   = aws_vpc.production-vpc.id
+  target_type = "ip"
 
   health_check {
     path                = var.health_check_path

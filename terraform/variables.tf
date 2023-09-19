@@ -5,7 +5,6 @@ variable "region" {
   default     = "us-west-1"
 }
 
-
 # networking
 
 variable "public_subnet_1_cidr" {
@@ -27,9 +26,8 @@ variable "private_subnet_2_cidr" {
 variable "availability_zones" {
   description = "Availability zones"
   type        = list(string)
-  default     = ["us-west-1b", "us-west-1c"]
+  default     = ["us-west-1a", "us-west-1c"]
 }
-
 
 # load balancer
 
@@ -38,6 +36,11 @@ variable "health_check_path" {
   default     = "/ping/"
 }
 
+# logs
+
+variable "log_retention_in_days" {
+  default = 30
+}
 
 # ecs
 
@@ -45,63 +48,53 @@ variable "ecs_cluster_name" {
   description = "Name of the ECS cluster"
   default     = "production"
 }
-variable "amis" {
-  description = "Which AMI to spawn."
-  default = {
-    us-west-1 = "ami-0bd3976c0dbacc605"
-  }
-}
-variable "instance_type" {
-  default = "t2.micro"
-}
+
 variable "docker_image_url_django" {
   description = "Docker image to run in the ECS cluster"
   default     = "<AWS_ACCOUNT_ID>.dkr.ecr.us-west-1.amazonaws.com/django-app:latest"
 }
-variable "docker_image_url_nginx" {
-  description = "Docker image to run in the ECS cluster"
-  default     = "<AWS_ACCOUNT_ID>.dkr.ecr.us-west-1.amazonaws.com/nginx:latest"
-}
+
 variable "app_count" {
   description = "Number of Docker containers to run"
   default     = 2
 }
+
+variable "fargate_cpu" {
+  description = "Amount of CPU for Fargate task. E.g., '256' (.25 vCPU)"
+  default     = "256"
+}
+
+variable "fargate_memory" {
+  description = "Amount of memory for Fargate task. E.g., '512' (0.5GB)"
+  default     = "512"
+}
+
+variable "docker_image_url_nginx" {
+  description = "Docker image to run in the ECS cluster"
+  default     = "<AWS_ACCOUNT_ID>.dkr.ecr.us-west-1.amazonaws.com/nginx:latest"
+}
+
 variable "allowed_hosts" {
   description = "Domain name for allowed hosts"
   default     = "YOUR DOMAIN NAME"
 }
 
-
-# logs
-
-variable "log_retention_in_days" {
-  default = 30
-}
-
-
-# key pair
-
-variable "ssh_pubkey_file" {
-  description = "Path to an SSH public key"
-  default     = "~/.ssh/id_rsa.pub"
-}
-
-
-# auto scaling
+# ECS service auto scaling
 
 variable "autoscale_min" {
-  description = "Minimum autoscale (number of EC2)"
+  description = "Minimum autoscale (number of tasks)"
   default     = "1"
 }
+
 variable "autoscale_max" {
-  description = "Maximum autoscale (number of EC2)"
+  description = "Maximum autoscale (number of tasks)"
   default     = "10"
 }
+
 variable "autoscale_desired" {
-  description = "Desired autoscale (number of EC2)"
+  description = "Desired number of tasks to run initially"
   default     = "4"
 }
-
 
 # rds
 
@@ -118,13 +111,12 @@ variable "rds_password" {
 }
 variable "rds_instance_class" {
   description = "RDS instance type"
-  default     = "db.t2.micro"
+  default     = "db.t3.micro"
 }
-
 
 # domain
 
 variable "certificate_arn" {
   description = "AWS Certificate Manager ARN for validated domain"
-  default     = "YOUR ARN"
+  default     = "ADD YOUR ARN HERE"
 }
