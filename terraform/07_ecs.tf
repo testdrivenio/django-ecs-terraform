@@ -17,6 +17,28 @@ data "template_file" "app" {
   }
 }
 
+resource "aws_efs_file_system" "efs" {
+  lifecycle_policy {
+    transition_to_ia = "AFTER_30_DAYS"
+  }
+}
+
+resource "aws_efs_access_point" "app_access_point" {
+  file_system_id = aws_efs_file_system.efs.id
+  posix_user {
+    uid = 1000
+    gid = 1000
+  }
+  root_directory {
+    path = "/efs"
+    creation_info {
+      owner_uid   = 1000
+      owner_gid   = 1000
+      permissions = "755"
+    }
+  }
+}
+
 resource "aws_ecs_task_definition" "app" {
   family                   = "django-app"
   network_mode             = "awsvpc" # Required for Fargate
@@ -26,12 +48,21 @@ resource "aws_ecs_task_definition" "app" {
   execution_role_arn       = aws_iam_role.ecs-task-execution-role.arn
   container_definitions    = data.template_file.app.rendered
   depends_on               = [aws_db_instance.production]
+
   volume {
-    name      = "static_volume"
-    host_path = "/usr/src/app/staticfiles/"
+    name = "efs-volume"
+    efs_volume_configuration {
+      file_system_id          = aws_efs_file_system.efs.id
+      root_directory          = "/efs"
+      transit_encryption      = "ENABLED"
+      transit_encryption_port = 2049
+      authorization_config {
+        access_point_id = aws_efs_access_point.app_access_point.id
+        iam             = "ENABLED"
+      }
+    }
   }
 }
-
 
 resource "aws_ecs_service" "production" {
   name            = "${var.ecs_cluster_name}-service"
@@ -52,15 +83,13 @@ resource "aws_ecs_service" "production" {
   }
 }
 
-
-
 resource "aws_ecs_task_definition" "django_migration" {
   family                = "django-migration-task"
   network_mode          = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                   = var.fargate_cpu
   memory                = var.fargate_memory
-  execution_role_arn    = aws_iam_role.ecs_execution_role.arn
+  execution_role_arn    = aws_iam_role.ecs-task-execution-role.arn
 
   container_definitions = jsonencode([
     {
