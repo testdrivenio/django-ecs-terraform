@@ -48,7 +48,8 @@ resource "aws_ecs_task_definition" "app" {
   execution_role_arn       = aws_iam_role.ecs-task-execution-role.arn
   container_definitions    = data.template_file.app.rendered
   depends_on               = [aws_db_instance.production]
-
+  task_role_arn            = aws_iam_role.ecs_task_role.arn
+  execution_role_arn       = aws_iam_role.ecs-task-execution-role.arn
   volume {
     name = "efs-volume"
     efs_volume_configuration {
