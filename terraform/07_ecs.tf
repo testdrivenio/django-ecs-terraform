@@ -23,6 +23,18 @@ resource "aws_efs_file_system" "efs" {
   }
 }
 
+resource "aws_efs_mount_target" "efs_mount_target_1" {
+  file_system_id = aws_efs_file_system.efs.id
+  subnet_id      = var.subnet_id_1
+  security_groups = [var.efs_security_group_id]
+}
+
+resource "aws_efs_mount_target" "efs_mount_target_2" {
+  file_system_id = aws_efs_file_system.efs.id
+  subnet_id      = var.subnet_id_2
+  security_groups = [var.efs_security_group_id]
+}
+
 resource "aws_efs_access_point" "app_access_point" {
   file_system_id = aws_efs_file_system.efs.id
   posix_user {
@@ -39,13 +51,29 @@ resource "aws_efs_access_point" "app_access_point" {
   }
 }
 
+resource "aws_efs_access_point" "app_access_point" {
+  file_system_id = aws_efs_file_system.efs.id
+  posix_user {
+    uid = 1000
+    gid = 1000
+  }
+  root_directory {
+    path = "/efs"
+    creation_info {
+      owner_uid   = 1000
+      owner_gid   = 1000
+      permissions = "755"
+    }
+  }
+}
+
+
 resource "aws_ecs_task_definition" "app" {
   family                   = "django-app"
   network_mode             = "awsvpc" # Required for Fargate
   requires_compatibilities = ["FARGATE"]
   cpu                      = "${var.fargate_cpu}"
   memory                   = "${var.fargate_memory}"
-  execution_role_arn       = aws_iam_role.ecs-task-execution-role.arn
   container_definitions    = data.template_file.app.rendered
   depends_on               = [aws_db_instance.production]
   task_role_arn            = aws_iam_role.ecs_task_role.arn
@@ -71,14 +99,15 @@ resource "aws_ecs_service" "production" {
   task_definition = aws_ecs_task_definition.app.arn
   launch_type     = "FARGATE"
   desired_count   = var.app_count
+
   network_configuration {
-    subnets          = [aws_subnet.public-subnet-1.id, aws_subnet.public-subnet-2.id]
-    security_groups  = [aws_security_group.ecs-fargate.id]
+    subnets          = [var.subnet_id_1, var.subnet_id_2]
+    security_groups  = [var.ecs_security_group_id]
     assign_public_ip = true
   }
 
   load_balancer {
-    target_group_arn = aws_alb_target_group.default-target-group.arn
+    target_group_arn = var.alb_target_group_arn
     container_name   = "nginx"
     container_port   = 80
   }

@@ -69,6 +69,41 @@ variable "fargate_memory" {
   default     = "512"
 }
 
+variable "subnet_id_1" {
+  description = "ID of the first subnet"
+  type        = string
+}
+
+variable "subnet_id_2" {
+  description = "ID of the second subnet"
+  type        = string
+}
+
+variable "efs_security_group_id" {
+  description = "Security group ID for EFS"
+  type        = string
+}
+
+variable "ecs_security_group_id" {
+  description = "Security group ID for ECS"
+  type        = string
+}
+
+variable "ecs_execution_role_arn" {
+  description = "ARN of the ECS execution role"
+  type        = string
+}
+
+variable "ecs_task_role_arn" {
+  description = "ARN of the ECS task role"
+  type        = string
+}
+
+variable "alb_target_group_arn" {
+  description = "ARN of the ALB target group"
+  type        = string
+}
+
 variable "docker_image_url_nginx" {
   description = "Docker image to run in the ECS cluster"
   default     = "<AWS_ACCOUNT_ID>.dkr.ecr.us-west-1.amazonaws.com/nginx:latest"
