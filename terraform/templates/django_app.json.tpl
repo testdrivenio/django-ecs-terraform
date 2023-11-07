@@ -5,11 +5,9 @@
     "essential": true,
     "cpu": 10,
     "memory": 512,
-    "links": [],
     "portMappings": [
       {
         "containerPort": 8000,
-        "hostPort": 8000,
         "protocol": "tcp"
       }
     ],
@@ -42,8 +40,10 @@
     ],
     "mountPoints": [
       {
-        "containerPath": "/usr/src/app/staticfiles",
-        "sourceVolume": "static_volume"
+        "containerPath": "/efs/staticfiles/",
+        "sourceVolume": "efs-volume",
+        "readOnly": false
+
       }
     ],
     "logConfiguration": {
@@ -61,18 +61,18 @@
     "essential": true,
     "cpu": 10,
     "memory": 128,
-    "links": ["django-app"],
     "portMappings": [
       {
         "containerPort": 80,
-        "hostPort": 80,
         "protocol": "tcp"
       }
     ],
     "mountPoints": [
       {
-        "containerPath": "/usr/src/app/staticfiles",
-        "sourceVolume": "static_volume"
+        "containerPath": "/efs/staticfiles/",
+        "sourceVolume": "efs-volume",
+        "readOnly": false
+
       }
     ],
     "logConfiguration": {

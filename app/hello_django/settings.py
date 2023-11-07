@@ -21,13 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-(z$s%)%-pp-5ae$p4!1(g3zx7cu9ygslpy+ignvc$z@_8zxwnd"
+SECRET_KEY = "django-insecure-m!a945s5uhh++h_+mzjkioxaqtl6)*5jt#_l=bjk4^wfv(=9y%"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split()
-
 
 # Application definition
 
@@ -41,7 +40,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'hello_django.middleware.HealthCheckMiddleware',
+    "hello_django.middleware.HealthCheckMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -129,10 +128,9 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = '/staticfiles/'
-STATIC_ROOT = '/efs/staticfiles/'
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+STATIC_URL = '/staticfiles/'
+STATIC_ROOT = '/efs/staticfiles/'

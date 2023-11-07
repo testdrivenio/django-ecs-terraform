@@ -36,12 +36,6 @@ variable "health_check_path" {
   default     = "/ping/"
 }
 
-# logs
-
-variable "log_retention_in_days" {
-  default = 30
-}
-
 # ecs
 
 variable "ecs_cluster_name" {
@@ -69,49 +63,10 @@ variable "fargate_memory" {
   default     = "512"
 }
 
-variable "subnet_id_1" {
-  description = "ID of the first subnet"
-  type        = string
-}
+# logs
 
-variable "subnet_id_2" {
-  description = "ID of the second subnet"
-  type        = string
-}
-
-variable "efs_security_group_id" {
-  description = "Security group ID for EFS"
-  type        = string
-}
-
-variable "ecs_security_group_id" {
-  description = "Security group ID for ECS"
-  type        = string
-}
-
-variable "ecs_execution_role_arn" {
-  description = "ARN of the ECS execution role"
-  type        = string
-}
-
-variable "ecs_task_role_arn" {
-  description = "ARN of the ECS task role"
-  type        = string
-}
-
-variable "alb_target_group_arn" {
-  description = "ARN of the ALB target group"
-  type        = string
-}
-
-variable "docker_image_url_nginx" {
-  description = "Docker image to run in the ECS cluster"
-  default     = "<AWS_ACCOUNT_ID>.dkr.ecr.us-west-1.amazonaws.com/nginx:latest"
-}
-
-variable "allowed_hosts" {
-  description = "Domain name for allowed hosts"
-  default     = "YOUR DOMAIN NAME"
+variable "log_retention_in_days" {
+  default = 30
 }
 
 # ECS service auto scaling
@@ -153,5 +108,17 @@ variable "rds_instance_class" {
 
 variable "certificate_arn" {
   description = "AWS Certificate Manager ARN for validated domain"
-  default     = "ADD YOUR ARN HERE"
+  default     = "YOUR CERTIFICATE ARN"
+}
+
+# nginx
+
+variable "docker_image_url_nginx" {
+  description = "Docker image to run in the ECS cluster"
+  default     = "<AWS_ACCOUNT_ID>.dkr.ecr.us-west-1.amazonaws.com/nginx:latest"
+}
+
+variable "allowed_hosts" {
+  description = "Domain name for allowed hosts"
+  default     = "YOUR DOMAIN NAME"
 }
