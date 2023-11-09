@@ -48,7 +48,28 @@ resource "aws_ecs_task_definition" "django_migration" {
     {
       name  = "django-migration-container"
       image = var.docker_image_url_django
-
+      environment: [
+        {
+            "name": "RDS_DB_NAME",
+            "value": var.rds_db_name
+        },
+        {
+            "name": "RDS_USERNAME",
+            "value": var.rds_username
+        },
+        {
+            "name": "RDS_PASSWORD",
+            "value": var.rds_password
+        },
+        {
+            "name": "RDS_HOSTNAME",
+            "value": aws_db_instance.production.address
+        },
+        {
+            "name": "RDS_PORT",
+            "value": "5432"
+        }
+      ],
       # Run migrations as the command
       command = ["python", "manage.py", "migrate"]
 
