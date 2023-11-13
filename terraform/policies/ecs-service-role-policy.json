@@ -10,7 +10,11 @@
         "ec2:Describe*",
         "ec2:AuthorizeSecurityGroupIngress",
         "elasticloadbalancing:RegisterTargets",
-        "elasticloadbalancing:DeregisterTargets"
+        "elasticloadbalancing:DeregisterTargets",
+        "elasticfilesystem:ClientMount",
+        "elasticfilesystem:ClientWrite",
+        "elasticfilesystem:ClientRootAccess",
+        "elasticfilesystem:DescribeFileSystems"
       ],
       "Resource": [
         "*"

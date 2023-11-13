@@ -15,13 +15,13 @@ Sets up the following AWS infrastructure:
     - Task Definition (with multiple containers)
     - Cluster
     - Service
-- Launch Config and Auto Scaling Group
+- Auto scaling config
 - RDS
 - Health Checks and Logs
 
 ## Want to learn how to build this?
 
-Check out the [post](https://testdriven.io/blog/deploying-django-to-ecs-with-terraform/).
+Check out the [tutorial](https://testdriven.io/blog/deploying-django-to-ecs-with-terraform/).
 
 ## Want to use this project?
 
@@ -64,16 +64,26 @@ Check out the [post](https://testdriven.io/blog/deploying-django-to-ecs-with-ter
 1. Terraform will output an ALB domain. Create a CNAME record for this domain
    for the value in the `allowed_hosts` variable.
 
-1. Open the EC2 instances overview page in AWS. Use `ssh ec2-user@<ip>` to
-   connect to the instances until you find one for which `docker ps` contains
-   the Django container. Run
-   `docker exec -it <container ID> python manage.py migrate`.
+1. To apply the migrations, run the following command, making sure to replace `YOUR_SUBNET_1`, `YOUR_SUBNET_2`, and `YOUR_SECURITY_GROUP` with the values that were outputted to your terminal from the `terraform apply` command:
+
+    ```sh
+    $ aws ecs run-task \
+        --cluster production-cluster \
+        --task-definition django-migration-task \
+        --launch-type FARGATE \
+        --network-configuration "awsvpcConfiguration={subnets=[YOUR_SUBNET_1, YOUR_SUBNET_2],securityGroups=[YOUR_SECURITY_GROUP],assignPublicIp=ENABLED}"
+    ```
 
 1. Now you can open `https://your.domain.com/admin`. Note that `http://` won't work.
 
-1. You can also run the following script to bump the Task Definition and update the Service:
+1. To collect the static files, navigate to the "deploy" folder, create and activate a Python virtual environment, install the requirements, and then run the following command, making sure to replace `<AWS_ACCOUNT_ID>` with your AWS account ID:
 
     ```sh
-    $ cd deploy
-    $ python update-ecs.py --cluster=production-cluster --service=production-service
+    (env)$ python update-ecs.py \
+            --cluster=production-cluster \
+            --service=production-service \
+            --image="<AWS_ACCOUNT_ID>.dkr.ecr.us-west-1.amazonaws.com/django-app:latest" \
+            --container-name django-app
     ```
+
+    You can use the same command to bump the Task Definition and update the Service.
